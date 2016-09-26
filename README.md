@@ -1,10 +1,12 @@
 # Hangfire.ActivationExtensions
 
+[![AppVeyor](https://img.shields.io/appveyor/ci/Silvenga/hangfire-activationextensions.svg?maxAge=2592000&style=flat-square)](https://ci.appveyor.com/project/Silvenga/hangfire-activationextensions)
+
 Generic extensions for Hangfire's job activation. Provides an implementation to customize job activation during job creation. 
 
 ## Usage
 
-The package provides an extension method for the IGlobalConfiguration interface, so you can enable activator interceptor integration using the `GlobalConfiguration` class.
+The package provides an extension method for the IGlobalConfiguration interface, so you can enable the activator interceptor integration using the `GlobalConfiguration` class.
 
 The below example uses the `NinjectActivator` from `Hangfire.Ninject`. 
 
@@ -49,7 +51,6 @@ public interface IJobActivatorFilter
     /// <param name="createdScope">The scope created by the activator.</param>
     JobActivatorScope OnScopeCreated(JobActivatorContext context, JobActivatorScope createdScope);
 }
-    }
 ```
 
 ## TODO
@@ -57,5 +58,5 @@ public interface IJobActivatorFilter
 - [ ] Handle usage with default activator
 - [ ] Docs
 - [ ] Nuget package
-- [ ] Setup CI
+- [X] Setup CI
 - [ ] Test `GlobalConfigurationExtensions`
