@@ -1,0 +1,161 @@
+﻿namespace Hangfire.ActivationExtensions.Tests
+{
+    using System;
+    using System.Collections.Generic;
+
+    using FluentAssertions;
+
+    using Hangfire.ActivationExtensions.Interceptor;
+
+    using NSubstitute;
+
+    using Ploeh.AutoFixture;
+
+    using Xunit;
+
+    public class PassThroughJobActivatorFacts
+    {
+        private static readonly Fixture AutoFixture = new Fixture();
+
+        private readonly JobActivator _mockActivator;
+        private readonly IJobActivatorFilter _mockFilter;
+        private readonly JobActivatorFilterCollection _mockFilterCollection;
+
+        public PassThroughJobActivatorFacts()
+        {
+            _mockActivator = Substitute.For<JobActivator>();
+            _mockFilter = Substitute.For<IJobActivatorFilter>();
+            _mockFilterCollection = AutoFixture.Build<JobActivatorFilterCollection>()
+                                                .With(x => x.Filters, new List<IJobActivatorFilter> {_mockFilter})
+                                                .Create();
+        }
+
+        [Fact]
+        public void ActivateJob_should_call_OnMaterializing_before_activating_job()
+        {
+            var type = AutoFixture.Create<Type>();
+            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+
+            _mockActivator.When(x => x.ActivateJob(type)).Throw<SignalException>();
+
+            // Act
+            Action action = () => activator.ActivateJob(type);
+
+            // Assert
+            action.ShouldThrow<SignalException>();
+            _mockFilter.Received().OnMaterializing(type);
+        }
+
+        [Fact]
+        public void ActivateJob_should_call_OnMaterialized_after_constructing_job()
+        {
+            var type = AutoFixture.Create<Type>();
+            var obj = AutoFixture.Create<object>();
+            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+
+            _mockActivator.ActivateJob(type).Returns(obj);
+            _mockActivator
+                .When(x => x.ActivateJob(type))
+                 .Do(info =>
+                             _mockFilter.DidNotReceive().OnMaterialized(Arg.Any<Type>(), Arg.Any<object>())
+                 );
+
+            // Act
+            activator.ActivateJob(type);
+
+            // Assert
+            _mockFilter.Received().OnMaterialized(type, obj);
+        }
+
+        [Fact]
+        public void Obsolete_BeginScope_should_throw_obsolete()
+        {
+            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+
+            // Act
+#pragma warning disable 618
+            Action action = () => activator.BeginScope();
+#pragma warning restore 618
+
+            // Assert
+            action.ShouldThrow<NotImplementedException>();
+        }
+
+        [Fact]
+        public void BeginScope_should_call_OnScopeCreating_before_creating_scope()
+        {
+            var context = ActivatorFixture();
+            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+
+            _mockActivator.When(x => x.BeginScope(context)).Throw<SignalException>();
+
+            // Act
+            Action action = () => activator.BeginScope(context);
+
+            // Assert
+            action.ShouldThrow<SignalException>();
+            _mockFilter.Received().OnScopeCreating(context);
+        }
+
+        [Fact]
+        public void BeginScope_should_call_OnScopeCreated_after_creating_scope()
+        {
+            var context = ActivatorFixture();
+            var scope = Substitute.For<JobActivatorScope>();
+            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+
+            _mockActivator.BeginScope(context).Returns(scope);
+            _mockActivator
+                .When(x => x.BeginScope(context))
+                 .Do(info =>
+                             _mockFilter.DidNotReceive().OnScopeCreated(Arg.Any<JobActivatorContext>(), Arg.Any<JobActivatorScope>())
+                 );
+
+            // Act
+            activator.BeginScope(context);
+
+            // Assert
+            _mockFilter.Received().OnScopeCreated(context, scope);
+        }
+
+        [Fact]
+        public void ActivateJob_should_pass_returns_through()
+        {
+            var type = AutoFixture.Create<Type>();
+            var obj = AutoFixture.Create<object>();
+            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+            _mockActivator.ActivateJob(type).Returns(obj);
+
+            // Act
+            var result = activator.ActivateJob(type);
+
+            // Assert
+            result.Should().BeSameAs(obj);
+        }
+
+        [Fact]
+        public void BeginScope_should_pass_returns_through()
+        {
+            var context = ActivatorFixture();
+            var scope = Substitute.For<JobActivatorScope>();
+            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+            _mockActivator.BeginScope(context).Returns(scope);
+
+            // Act
+            var result = activator.BeginScope(context);
+
+            // Assert
+            result.Should().BeSameAs(scope);
+        }
+
+        private static JobActivatorContext ActivatorFixture()
+        {
+            // TODO Make tracking refs possible
+            return null;
+        }
+    }
+
+    public class SignalException : Exception
+    {
+    }
+}

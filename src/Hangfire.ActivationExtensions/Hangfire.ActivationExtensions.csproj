@@ -52,6 +52,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GlobalConfigurationExtensions.cs" />
+    <Compile Include="Interceptor\IJobActivatorFilter.cs" />
+    <Compile Include="Interceptor\JobActivatorFilterCollection.cs" />
+    <Compile Include="Interceptor\PassThroughJobActivator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
