@@ -55,7 +55,7 @@ public interface IJobActivatorFilter
 
 ## TODO
 
-- [ ] Handle usage with default activator
+- [X] Handle usage with default activator
 - [ ] Docs
 - [ ] Nuget package
 - [X] Setup CI
