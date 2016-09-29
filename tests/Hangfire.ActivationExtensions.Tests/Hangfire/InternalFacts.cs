@@ -59,6 +59,24 @@
             // Assert
         }
 
+        [Fact]
+        public void Scope_creation_hooks_called()
+        {
+            var mockFilter = Substitute.For<IJobActivatorFilter>();
+
+            var jobActivatorFilterCollection = new JobActivatorFilterCollection(mockFilter);
+            var performer = CreatePerformer(new PassThroughJobActivator(jobActivatorFilterCollection, JobActivator.Current));
+            var job = CreateBackgroundJob(Job.FromExpression<JobFixture>(x => x.InstanceMethod()));
+            var context = CreateContext(job);
+
+            // Act
+            performer.Perform(context);
+
+            // Assert
+            mockFilter.Received().OnScopeCreating(Arg.Any<JobActivatorContext>());
+            mockFilter.Received().OnScopeCreated(Arg.Any<JobActivatorContext>(), Arg.Any<JobActivatorScope>());
+        }
+
         private IBackgroundJobPerformer CreatePerformer(JobActivator activator)
         {
             var memberInfo = Type.GetType("Hangfire.Server.CoreBackgroundJobPerformer,Hangfire.Core");

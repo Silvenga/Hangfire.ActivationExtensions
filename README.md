@@ -49,7 +49,21 @@ public interface IJobActivatorFilter
     /// </summary>
     /// <param name="context">Context of the activator.</param>
     /// <param name="createdScope">The scope created by the activator.</param>
-    JobActivatorScope OnScopeCreated(JobActivatorContext context, JobActivatorScope createdScope);
+    void OnScopeCreated(JobActivatorContext context, JobActivatorScope createdScope);
+
+    /// <summary>
+    /// Called before the scope has been disposed.
+    /// </summary>
+    /// <param name="jobType">The last type requested from the activator.</param>
+    /// <param name="activatedJob">The last object materialized from the activator.</param>
+    void OnScopeDisposing(Type jobType, object activatedJob);
+
+    /// <summary>
+    /// Called after the scope has been disposed. This is normally when all objects within the scrope have been cleaned up.
+    /// </summary>
+    /// <param name="jobType">The last type requested from the activator.</param>
+    /// <param name="activatedJob">The last object materialized from the activator.</param>
+    void OnScopeDisposed(Type jobType, object activatedJob);
 }
 ```
 
@@ -60,4 +74,4 @@ public interface IJobActivatorFilter
 - [ ] Nuget package
 - [X] Setup CI
 - [ ] Test `GlobalConfigurationExtensions`
-- [ ] Test using Hangfire directly
+- [X] Test using Hangfire directly
