@@ -28,6 +28,16 @@
         /// </summary>
         /// <param name="context">Context of the activator.</param>
         /// <param name="createdScope">The scope created by the activator.</param>
-        JobActivatorScope OnScopeCreated(JobActivatorContext context, JobActivatorScope createdScope);
+        void OnScopeCreated(JobActivatorContext context, JobActivatorScope createdScope);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void OnScopeDisposing(Type jobType, object activatedJob);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void OnScopeDisposed(Type jobType, object activatedJob);
     }
 }

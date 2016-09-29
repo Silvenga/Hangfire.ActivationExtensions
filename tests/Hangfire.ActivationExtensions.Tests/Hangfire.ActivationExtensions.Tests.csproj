@@ -84,7 +84,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PassThroughJobActivatorFacts.cs" />
+    <Compile Include="Hangfire\InternalFacts.cs" />
+    <Compile Include="Hangfire\JobFixture.cs" />
+    <Compile Include="Interceptor\PassThroughJobActivatorFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +99,7 @@
       <Name>Hangfire.ActivationExtensions</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -60,3 +60,4 @@ public interface IJobActivatorFilter
 - [ ] Nuget package
 - [X] Setup CI
 - [ ] Test `GlobalConfigurationExtensions`
+- [ ] Test using Hangfire directly

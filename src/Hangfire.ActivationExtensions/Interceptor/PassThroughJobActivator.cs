@@ -42,7 +42,7 @@
         [Obsolete("Please implement/use the BeginScope(JobActivatorContext) method instead. Will be removed in 2.0.0.")]
         public override JobActivatorScope BeginScope()
         {
-            throw new NotImplementedException($"Call of obsolete {nameof(BeginScope)} is not supported."); // TODO
+            return new PassThroughScope(_filterCollection, _activator.BeginScope());
         }
 
         public override JobActivatorScope BeginScope(JobActivatorContext context)
@@ -59,7 +59,7 @@
                 filter.OnScopeCreated(context, scope);
             }
 
-            return scope;
+            return new PassThroughScope(_filterCollection, scope);
         }
     }
 }

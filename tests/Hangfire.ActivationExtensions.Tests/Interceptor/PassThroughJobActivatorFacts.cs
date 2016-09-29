@@ -1,11 +1,11 @@
-﻿namespace Hangfire.ActivationExtensions.Tests
+﻿namespace Hangfire.ActivationExtensions.Tests.Interceptor
 {
     using System;
     using System.Collections.Generic;
 
     using FluentAssertions;
 
-    using Hangfire.ActivationExtensions.Interceptor;
+    using global::Hangfire.ActivationExtensions.Interceptor;
 
     using NSubstitute;
 
@@ -68,17 +68,17 @@
         }
 
         [Fact]
-        public void Obsolete_BeginScope_should_throw_obsolete()
+        public void BeginScope_should_return_passthrough_scope()
         {
             var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
 
             // Act
 #pragma warning disable 618
-            Action action = () => activator.BeginScope();
+            var scope = activator.BeginScope();
 #pragma warning restore 618
 
             // Assert
-            action.ShouldThrow<NotImplementedException>();
+            scope.Should().BeAssignableTo<PassThroughScope>();
         }
 
         [Fact]
@@ -134,18 +134,16 @@
         }
 
         [Fact]
-        public void BeginScope_should_pass_returns_through()
+        public void BeginScope_with_context_should_return_passthrough_scope()
         {
             var context = ActivatorFixture();
-            var scope = Substitute.For<JobActivatorScope>();
             var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
-            _mockActivator.BeginScope(context).Returns(scope);
 
             // Act
             var result = activator.BeginScope(context);
 
             // Assert
-            result.Should().BeSameAs(scope);
+            result.Should().BeAssignableTo<PassThroughScope>();
         }
 
         private static JobActivatorContext ActivatorFixture()
