@@ -4,6 +4,15 @@
 
 Generic extensions for Hangfire's job activation. Provides an implementation to customize job activation during job creation. 
 
+## Install
+
+Latest releases can be found on [MyGet](https://www.myget.org/F/silvenga/api/v2).
+
+> TODO: Create Nuget.org packages.
+```
+Install-Package Hangfire.ActivationExtensions
+```
+
 ## Usage
 
 The package provides an extension method for the IGlobalConfiguration interface, so you can enable the activator interceptor integration using the `GlobalConfiguration` class.
