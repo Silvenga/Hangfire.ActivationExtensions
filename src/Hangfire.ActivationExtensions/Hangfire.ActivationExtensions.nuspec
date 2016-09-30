@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Silvenga</authors>
+    <owners>Silvenga</owners>
+    <licenseUrl>https://github.com/Silvenga/Hangfire.ActivationExtensions/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/Silvenga/Hangfire.ActivationExtensions</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Generic extensions for Hangfire's job activation. Provides an implementation to customize job activation during job creation.</description>
+    <copyright>Copyright 2016</copyright>
+  </metadata>
+</package>
