@@ -11,6 +11,14 @@
 
         public PassThroughScope(JobActivatorFilterCollection filterCollection, JobActivatorScope scope)
         {
+            if (filterCollection == null)
+            {
+                throw new ArgumentNullException(nameof(filterCollection));
+            }
+            if (scope == null)
+            {
+                throw new ArgumentNullException(nameof(scope));
+            }
             _filterCollection = filterCollection;
             _scope = scope;
         }

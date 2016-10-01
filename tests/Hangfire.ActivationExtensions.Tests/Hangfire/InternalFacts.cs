@@ -12,12 +12,25 @@
 
     using NSubstitute;
 
+    using Ploeh.AutoFixture;
+
     using Xunit;
 
     public class InternalFacts
     {
+        private static readonly Fixture AutoFixture = new Fixture();
+
         private readonly IStorageConnection _storage = Substitute.For<IStorageConnection>();
         private readonly IJobCancellationToken _token = Substitute.For<IJobCancellationToken>();
+        private readonly JobActivator _activator = Substitute.For<JobActivator>();
+        private readonly JobActivatorScope _scope = Substitute.For<JobActivatorScope>();
+        private readonly object _activatedJob = AutoFixture.Create<JobFixture>();
+
+        public InternalFacts()
+        {
+            _activator.BeginScope(Arg.Any<JobActivatorContext>()).Returns(_scope);
+            _scope.Resolve(typeof(JobFixture)).Returns(_activatedJob);
+        }
 
         [Fact]
         public void Static_invocation_functions()
@@ -29,7 +42,7 @@
                     new ActivatorFixture()
                 }
             };
-            var performer = CreatePerformer(new PassThroughJobActivator(jobActivatorFilterCollection, JobActivator.Current));
+            var performer = CreatePerformer(new PassThroughJobActivator(jobActivatorFilterCollection, _activator));
             var job = CreateBackgroundJob(Job.FromExpression(() => JobFixture.StaticMethod()));
             var context = CreateContext(job);
 
@@ -49,7 +62,7 @@
                     new ActivatorFixture()
                 }
             };
-            var performer = CreatePerformer(new PassThroughJobActivator(jobActivatorFilterCollection, JobActivator.Current));
+            var performer = CreatePerformer(new PassThroughJobActivator(jobActivatorFilterCollection, _activator));
             var job = CreateBackgroundJob(Job.FromExpression<JobFixture>(x => x.InstanceMethod()));
             var context = CreateContext(job);
 
@@ -64,17 +77,49 @@
         {
             var mockFilter = Substitute.For<IJobActivatorFilter>();
 
-            var jobActivatorFilterCollection = new JobActivatorFilterCollection(mockFilter);
-            var performer = CreatePerformer(new PassThroughJobActivator(jobActivatorFilterCollection, JobActivator.Current));
-            var job = CreateBackgroundJob(Job.FromExpression<JobFixture>(x => x.InstanceMethod()));
-            var context = CreateContext(job);
-
             // Act
-            performer.Perform(context);
+            CreateAndPerform(mockFilter);
 
             // Assert
             mockFilter.Received().OnScopeCreating(Arg.Any<JobActivatorContext>());
-            mockFilter.Received().OnScopeCreated(Arg.Any<JobActivatorContext>(), Arg.Any<JobActivatorScope>());
+            mockFilter.Received().OnScopeCreated(Arg.Any<JobActivatorContext>(), Arg.Is(_scope));
+        }
+
+        [Fact]
+        public void Job_materialization_hooks_called()
+        {
+            var mockFilter = Substitute.For<IJobActivatorFilter>();
+
+            // Act
+            CreateAndPerform(mockFilter);
+
+            // Assert
+            mockFilter.Received().OnMaterializing(typeof(JobFixture));
+            mockFilter.Received().OnMaterialized(typeof(JobFixture), _activatedJob);
+        }
+
+        [Fact]
+        // ReSharper disable once IdentifierTypo
+        public void Scope_disposation_hooks_called()
+        {
+            var mockFilter = Substitute.For<IJobActivatorFilter>();
+
+            // Act
+            CreateAndPerform(mockFilter);
+
+            // Assert
+            mockFilter.Received().OnScopeDisposing(typeof(JobFixture), _activatedJob);
+            mockFilter.Received().OnScopeDisposed(typeof(JobFixture), _activatedJob);
+        }
+
+        private void CreateAndPerform(IJobActivatorFilter mockFilter)
+        {
+            var jobActivatorFilterCollection = new JobActivatorFilterCollection(mockFilter);
+            var performer = CreatePerformer(new PassThroughJobActivator(jobActivatorFilterCollection, _activator));
+            var job = CreateBackgroundJob(Job.FromExpression<JobFixture>(x => x.InstanceMethod()));
+            var context = CreateContext(job);
+
+            performer.Perform(context);
         }
 
         private IBackgroundJobPerformer CreatePerformer(JobActivator activator)

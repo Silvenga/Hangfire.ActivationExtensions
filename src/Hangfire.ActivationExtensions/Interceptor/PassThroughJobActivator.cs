@@ -7,6 +7,9 @@
         private readonly JobActivatorFilterCollection _filterCollection;
         private readonly JobActivator _activator;
 
+        public JobActivatorFilterCollection FilterCollection => _filterCollection;
+        public JobActivator Activator => _activator;
+
         public PassThroughJobActivator(JobActivatorFilterCollection filterCollection, JobActivator activator)
         {
             if (filterCollection == null)
