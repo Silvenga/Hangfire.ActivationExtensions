@@ -42,7 +42,7 @@
                     new ActivatorFixture()
                 }
             };
-            var performer = CreatePerformer(new PassThroughJobActivator(jobActivatorFilterCollection, _activator));
+            var performer = CreatePerformer(new PassThroughActivator(jobActivatorFilterCollection, _activator));
             var job = CreateBackgroundJob(Job.FromExpression(() => JobFixture.StaticMethod()));
             var context = CreateContext(job);
 
@@ -62,7 +62,7 @@
                     new ActivatorFixture()
                 }
             };
-            var performer = CreatePerformer(new PassThroughJobActivator(jobActivatorFilterCollection, _activator));
+            var performer = CreatePerformer(new PassThroughActivator(jobActivatorFilterCollection, _activator));
             var job = CreateBackgroundJob(Job.FromExpression<JobFixture>(x => x.InstanceMethod()));
             var context = CreateContext(job);
 
@@ -115,7 +115,7 @@
         private void CreateAndPerform(IJobActivatorFilter mockFilter)
         {
             var jobActivatorFilterCollection = new JobActivatorFilterCollection(mockFilter);
-            var performer = CreatePerformer(new PassThroughJobActivator(jobActivatorFilterCollection, _activator));
+            var performer = CreatePerformer(new PassThroughActivator(jobActivatorFilterCollection, _activator));
             var job = CreateBackgroundJob(Job.FromExpression<JobFixture>(x => x.InstanceMethod()));
             var context = CreateContext(job);
 

@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class PassThroughJobActivator : JobActivator
+    public class PassThroughActivator : JobActivator
     {
         private readonly JobActivatorFilterCollection _filterCollection;
         private readonly JobActivator _activator;
@@ -10,7 +10,7 @@
         public JobActivatorFilterCollection FilterCollection => _filterCollection;
         public JobActivator Activator => _activator;
 
-        public PassThroughJobActivator(JobActivatorFilterCollection filterCollection, JobActivator activator)
+        public PassThroughActivator(JobActivatorFilterCollection filterCollection, JobActivator activator)
         {
             if (filterCollection == null)
             {
@@ -45,7 +45,7 @@
         [Obsolete("Please implement/use the BeginScope(JobActivatorContext) method instead. Will be removed in 2.0.0.")]
         public override JobActivatorScope BeginScope()
         {
-            return new PassThroughScope(_filterCollection, _activator.BeginScope());
+            throw new NotImplementedException($"Call of {nameof(BeginScope)} without context is obsolete and is not supported. Please update your job activator.");
         }
 
         public override JobActivatorScope BeginScope(JobActivatorContext context)

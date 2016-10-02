@@ -35,7 +35,7 @@
                                         .UseActivatorInterceptor(_filterCollection);
 
             // Assert
-            var current = JobActivator.Current.Should().BeAssignableTo<PassThroughJobActivator>().Subject;
+            var current = JobActivator.Current.Should().BeAssignableTo<PassThroughActivator>().Subject;
             current.Activator.Should().Be(_activator);
             current.FilterCollection.Should().Be(_filterCollection);
         }

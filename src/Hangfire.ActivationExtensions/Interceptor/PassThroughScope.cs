@@ -25,7 +25,13 @@
 
         public override object Resolve(Type type)
         {
+            if (_type != default(Type))
+            {
+                throw new Exception(
+                    $"{nameof(Resolve)} was called more than once, this should not normally occur. Please contact the developer of {nameof(Hangfire.ActivationExtensions)}.");
+            }
             _type = type;
+
             foreach (var filter in _filterCollection.Filters)
             {
                 filter.OnMaterializing(type);

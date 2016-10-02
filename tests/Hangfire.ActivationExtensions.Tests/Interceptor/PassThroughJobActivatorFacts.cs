@@ -31,9 +31,6 @@
                                                 .With(x => x.Filters, new List<IJobActivatorFilter> {_mockFilter})
                                                 .Create();
 
-#pragma warning disable 618
-            _mockActivator.BeginScope().Returns(_mockScope);
-#pragma warning restore 618
             _mockActivator.BeginScope(Arg.Any<JobActivatorContext>()).Returns(_mockScope);
         }
 
@@ -41,7 +38,7 @@
         public void ActivateJob_should_call_OnMaterializing_before_activating_job()
         {
             var type = AutoFixture.Create<Type>();
-            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+            var activator = new PassThroughActivator(_mockFilterCollection, _mockActivator);
 
             _mockActivator.When(x => x.ActivateJob(type)).Throw<SignalException>();
 
@@ -58,7 +55,7 @@
         {
             var type = AutoFixture.Create<Type>();
             var obj = AutoFixture.Create<object>();
-            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+            var activator = new PassThroughActivator(_mockFilterCollection, _mockActivator);
 
             _mockActivator.ActivateJob(type).Returns(obj);
             _mockActivator
@@ -77,22 +74,22 @@
         [Fact]
         public void BeginScope_should_return_passthrough_scope()
         {
-            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+            var activator = new PassThroughActivator(_mockFilterCollection, _mockActivator);
 
             // Act
 #pragma warning disable 618
-            var scope = activator.BeginScope();
+            Action action = () => activator.BeginScope();
 #pragma warning restore 618
 
             // Assert
-            scope.Should().BeAssignableTo<PassThroughScope>();
+            action.ShouldThrow<NotImplementedException>();
         }
 
         [Fact]
         public void BeginScope_should_call_OnScopeCreating_before_creating_scope()
         {
             var context = ActivatorFixture();
-            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+            var activator = new PassThroughActivator(_mockFilterCollection, _mockActivator);
 
             _mockActivator.When(x => x.BeginScope(context)).Throw<SignalException>();
 
@@ -109,7 +106,7 @@
         {
             var context = ActivatorFixture();
             var scope = Substitute.For<JobActivatorScope>();
-            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+            var activator = new PassThroughActivator(_mockFilterCollection, _mockActivator);
 
             _mockActivator.BeginScope(context).Returns(scope);
             _mockActivator
@@ -130,7 +127,7 @@
         {
             var type = AutoFixture.Create<Type>();
             var obj = AutoFixture.Create<object>();
-            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+            var activator = new PassThroughActivator(_mockFilterCollection, _mockActivator);
             _mockActivator.ActivateJob(type).Returns(obj);
 
             // Act
@@ -144,7 +141,7 @@
         public void BeginScope_with_context_should_return_passthrough_scope()
         {
             var context = ActivatorFixture();
-            var activator = new PassThroughJobActivator(_mockFilterCollection, _mockActivator);
+            var activator = new PassThroughActivator(_mockFilterCollection, _mockActivator);
 
             // Act
             var result = activator.BeginScope(context);

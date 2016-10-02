@@ -9,7 +9,7 @@
 
     public static class GlobalConfigurationExtensions
     {
-        private static IGlobalConfiguration<PassThroughJobActivator> InternalUseActivator(this IGlobalConfiguration configuration,
+        private static IGlobalConfiguration<PassThroughActivator> InternalUseActivator(this IGlobalConfiguration configuration,
                                                                                           JobActivatorFilterCollection filterCollection,
                                                                                           JobActivator currentActivator)
         {
@@ -17,10 +17,10 @@
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
-            return configuration.UseActivator(new PassThroughJobActivator(filterCollection, currentActivator));
+            return configuration.UseActivator(new PassThroughActivator(filterCollection, currentActivator));
         }
 
-        public static IGlobalConfiguration<PassThroughJobActivator> UseActivatorInterceptor<T>([NotNull] this IGlobalConfiguration<T> configuration,
+        public static IGlobalConfiguration<PassThroughActivator> UseActivatorInterceptor<T>([NotNull] this IGlobalConfiguration<T> configuration,
                                                                                                JobActivatorFilterCollection filterCollection,
                                                                                                JobActivator currentActivator = null) where T : JobActivator
         {
@@ -31,7 +31,7 @@
             return configuration.InternalUseActivator(filterCollection, currentActivator ?? configuration.Entry);
         }
 
-        public static IGlobalConfiguration<PassThroughJobActivator> UseActivatorInterceptor<T>([NotNull] this IGlobalConfiguration<T> configuration,
+        public static IGlobalConfiguration<PassThroughActivator> UseActivatorInterceptor<T>([NotNull] this IGlobalConfiguration<T> configuration,
                                                                                                IEnumerable<IJobActivatorFilter> filters,
                                                                                                JobActivator currentActivator = null) where T : JobActivator
         {
@@ -47,7 +47,7 @@
             return configuration.UseActivatorInterceptor(filterCollection, currentActivator);
         }
 
-        public static IGlobalConfiguration<PassThroughJobActivator> UseActivatorInterceptor<T>([NotNull] this IGlobalConfiguration<T> configuration,
+        public static IGlobalConfiguration<PassThroughActivator> UseActivatorInterceptor<T>([NotNull] this IGlobalConfiguration<T> configuration,
                                                                                                IJobActivatorFilter filter,
                                                                                                JobActivator currentActivator = null) where T : JobActivator
         {
@@ -63,7 +63,7 @@
             return configuration.UseActivatorInterceptor(filterCollection, currentActivator);
         }
 
-        public static IGlobalConfiguration<PassThroughJobActivator> UseDefaultActivatorInterceptor([NotNull] this IGlobalConfiguration configuration,
+        public static IGlobalConfiguration<PassThroughActivator> UseDefaultActivatorInterceptor([NotNull] this IGlobalConfiguration configuration,
                                                                                                    JobActivatorFilterCollection filterCollection,
                                                                                                    JobActivator currentActivator = null)
         {
@@ -74,7 +74,7 @@
             return configuration.InternalUseActivator(filterCollection, currentActivator ?? JobActivator.Current);
         }
 
-        public static IGlobalConfiguration<PassThroughJobActivator> UseDefaultActivatorInterceptor([NotNull] this IGlobalConfiguration configuration,
+        public static IGlobalConfiguration<PassThroughActivator> UseDefaultActivatorInterceptor([NotNull] this IGlobalConfiguration configuration,
                                                                                                    IEnumerable<IJobActivatorFilter> filters,
                                                                                                    JobActivator currentActivator = null)
         {
@@ -90,7 +90,7 @@
             return configuration.UseDefaultActivatorInterceptor(filterCollection, currentActivator);
         }
 
-        public static IGlobalConfiguration<PassThroughJobActivator> UseDefaultActivatorInterceptor([NotNull] this IGlobalConfiguration configuration,
+        public static IGlobalConfiguration<PassThroughActivator> UseDefaultActivatorInterceptor([NotNull] this IGlobalConfiguration configuration,
                                                                                                    IJobActivatorFilter filter,
                                                                                                    JobActivator currentActivator = null)
         {
