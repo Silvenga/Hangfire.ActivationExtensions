@@ -11,5 +11,7 @@
   <NCrunchCacheStoragePath></NCrunchCacheStoragePath>
   <MetricsExclusionList>
 Interceptor\JobActivatorFilterCollection.cs:src\Hangfire.ActivationExtensions\Hangfire.ActivationExtensions.csproj
+src\Hangfire.ActivationExtensions\Hangfire.ActivationExtensions.csproj\Properties
+tests\Hangfire.ActivationExtensions.Tests\Hangfire.ActivationExtensions.Tests.csproj
 </MetricsExclusionList>
 </SolutionConfiguration>

@@ -13,7 +13,7 @@
 
     using Xunit;
 
-    public class PassThroughJobActivatorFacts
+    public class PassThroughActivatorFacts
     {
         private static readonly Fixture AutoFixture = new Fixture();
 
@@ -22,7 +22,7 @@
         private readonly JobActivatorFilterCollection _mockFilterCollection;
         private readonly JobActivatorScope _mockScope;
 
-        public PassThroughJobActivatorFacts()
+        public PassThroughActivatorFacts()
         {
             _mockActivator = Substitute.For<JobActivator>();
             _mockScope = Substitute.For<JobActivatorScope>();
