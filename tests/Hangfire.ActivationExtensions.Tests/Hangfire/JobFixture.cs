@@ -2,6 +2,7 @@
 {
     public class JobFixture
     {
+        // ReSharper disable once MemberCanBeMadeStatic.Global
         public void InstanceMethod()
         {
         }

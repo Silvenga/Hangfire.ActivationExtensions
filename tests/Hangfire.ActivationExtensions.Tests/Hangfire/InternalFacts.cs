@@ -25,11 +25,12 @@
         private readonly JobActivator _activator = Substitute.For<JobActivator>();
         private readonly JobActivatorScope _scope = Substitute.For<JobActivatorScope>();
         private readonly object _activatedJob = AutoFixture.Create<JobFixture>();
+        private readonly Type _jobType = typeof(JobFixture);
 
         public InternalFacts()
         {
             _activator.BeginScope(Arg.Any<JobActivatorContext>()).Returns(_scope);
-            _scope.Resolve(typeof(JobFixture)).Returns(_activatedJob);
+            _scope.Resolve(_jobType).Returns(_activatedJob);
         }
 
         [Fact]
@@ -39,7 +40,7 @@
             {
                 Filters = new List<IJobActivatorFilter>
                 {
-                    new ActivatorFixture()
+                    Substitute.For<IJobActivatorFilter>()
                 }
             };
             var performer = CreatePerformer(new PassThroughActivator(jobActivatorFilterCollection, _activator));
@@ -59,7 +60,7 @@
             {
                 Filters = new List<IJobActivatorFilter>
                 {
-                    new ActivatorFixture()
+                    Substitute.For<IJobActivatorFilter>()
                 }
             };
             var performer = CreatePerformer(new PassThroughActivator(jobActivatorFilterCollection, _activator));
@@ -94,8 +95,8 @@
             CreateAndPerform(mockFilter);
 
             // Assert
-            mockFilter.Received().OnMaterializing(typeof(JobFixture));
-            mockFilter.Received().OnMaterialized(typeof(JobFixture), _activatedJob);
+            mockFilter.Received().OnMaterializing(_jobType);
+            mockFilter.Received().OnMaterialized(_jobType, _activatedJob);
         }
 
         [Fact]
@@ -108,8 +109,8 @@
             CreateAndPerform(mockFilter);
 
             // Assert
-            mockFilter.Received().OnScopeDisposing(typeof(JobFixture), _activatedJob);
-            mockFilter.Received().OnScopeDisposed(typeof(JobFixture), _activatedJob);
+            mockFilter.Received().OnScopeDisposing(_jobType, _activatedJob);
+            mockFilter.Received().OnScopeDisposed(_jobType, _activatedJob);
         }
 
         private void CreateAndPerform(IJobActivatorFilter mockFilter)
@@ -145,33 +146,6 @@
         private BackgroundJob CreateBackgroundJob(Job job)
         {
             return new BackgroundJob("JobId", job, DateTime.UtcNow);
-        }
-    }
-
-    public class ActivatorFixture : IJobActivatorFilter
-    {
-        public void OnMaterializing(Type jobType)
-        {
-        }
-
-        public void OnMaterialized(Type jobType, object activatedJob)
-        {
-        }
-
-        public void OnScopeCreating(JobActivatorContext context)
-        {
-        }
-
-        public void OnScopeCreated(JobActivatorContext context, JobActivatorScope createdScope)
-        {
-        }
-
-        public void OnScopeDisposing(Type jobType, object activatedJob)
-        {
-        }
-
-        public void OnScopeDisposed(Type jobType, object activatedJob)
-        {
         }
     }
 }
