@@ -1,21 +1,21 @@
-﻿namespace Hangfire.ActivationExtensions.Tests.Hangfire
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+using Hangfire.ActivationExtensions.Interceptor;
+using Hangfire.Common;
+using Hangfire.Server;
+using Hangfire.Storage;
+
+using NSubstitute;
+
+using Ploeh.AutoFixture;
+
+using Xunit;
+
+namespace Hangfire.ActivationExtensions.Tests.Hangfire
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-
-    using global::Hangfire.ActivationExtensions.Interceptor;
-    using global::Hangfire.Common;
-    using global::Hangfire.Server;
-    using global::Hangfire.Storage;
-
-    using NSubstitute;
-
-    using Ploeh.AutoFixture;
-
-    using Xunit;
-
     public class InternalFacts
     {
         private static readonly Fixture AutoFixture = new Fixture();

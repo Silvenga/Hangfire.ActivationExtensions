@@ -1,17 +1,17 @@
-﻿namespace Hangfire.ActivationExtensions.Tests
+﻿using System.Collections.Generic;
+
+using FluentAssertions;
+
+using Hangfire.ActivationExtensions.Interceptor;
+
+using NSubstitute;
+
+using Ploeh.AutoFixture;
+
+using Xunit;
+
+namespace Hangfire.ActivationExtensions.Tests
 {
-    using System.Collections.Generic;
-
-    using FluentAssertions;
-
-    using global::Hangfire.ActivationExtensions.Interceptor;
-
-    using NSubstitute;
-
-    using Ploeh.AutoFixture;
-
-    using Xunit;
-
     public class GlobalConfigurationExtensionsFacts
     {
         private static readonly Fixture AutoFixture = new Fixture();

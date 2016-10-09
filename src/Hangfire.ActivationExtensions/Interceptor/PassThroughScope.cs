@@ -1,7 +1,7 @@
-﻿namespace Hangfire.ActivationExtensions.Interceptor
-{
-    using System;
+﻿using System;
 
+namespace Hangfire.ActivationExtensions.Interceptor
+{
     public class PassThroughScope : JobActivatorScope
     {
         private readonly JobActivatorFilterCollection _filterCollection;

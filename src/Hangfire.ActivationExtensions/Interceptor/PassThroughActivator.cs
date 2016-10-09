@@ -1,7 +1,7 @@
-﻿namespace Hangfire.ActivationExtensions.Interceptor
-{
-    using System;
+﻿using System;
 
+namespace Hangfire.ActivationExtensions.Interceptor
+{
     public class PassThroughActivator : JobActivator
     {
         private readonly JobActivatorFilterCollection _filterCollection;
@@ -45,7 +45,8 @@
         [Obsolete("Please implement/use the BeginScope(JobActivatorContext) method instead. Will be removed in 2.0.0.")]
         public override JobActivatorScope BeginScope()
         {
-            throw new NotImplementedException($"Call of {nameof(BeginScope)} without context is obsolete and is not supported. Please update your job activator.");
+            throw new NotImplementedException(
+                $"Call of {nameof(BeginScope)} without context is obsolete and is not supported. Please update your job activator.");
         }
 
         public override JobActivatorScope BeginScope(JobActivatorContext context)

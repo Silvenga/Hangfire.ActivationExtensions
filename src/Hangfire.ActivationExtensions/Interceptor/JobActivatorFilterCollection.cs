@@ -1,7 +1,7 @@
-﻿namespace Hangfire.ActivationExtensions.Interceptor
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace Hangfire.ActivationExtensions.Interceptor
+{
     public class JobActivatorFilterCollection
     {
         public ICollection<IJobActivatorFilter> Filters { get; set; }
