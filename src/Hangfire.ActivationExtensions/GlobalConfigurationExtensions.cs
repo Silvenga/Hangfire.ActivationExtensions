@@ -17,7 +17,21 @@ namespace Hangfire.ActivationExtensions
             {
                 throw new ArgumentNullException(nameof(configuration));
             }
-            return configuration.UseActivator(new PassThroughActivator(filterCollection, currentActivator));
+
+            PassThroughActivator activator;
+            if ((activator = currentActivator as PassThroughActivator) != null)
+            {
+                foreach (var filter in filterCollection.Filters)
+                {
+                    activator.FilterCollection.Filters.Add(filter);
+                }
+            }
+            else
+            {
+                activator = new PassThroughActivator(filterCollection, currentActivator);
+            }
+
+            return configuration.UseActivator(activator);
         }
 
         public static IGlobalConfiguration<PassThroughActivator> UseActivatorInterceptor<T>([NotNull] this IGlobalConfiguration<T> configuration,

@@ -87,6 +87,8 @@
     <Compile Include="GlobalConfigurationExtensionsFacts.cs" />
     <Compile Include="Hangfire\InternalFacts.cs" />
     <Compile Include="Hangfire\JobFixture.cs" />
+    <Compile Include="Helpers\ClassStaticLockAttribute.cs" />
+    <Compile Include="Helpers\UseCurrentJobActivatorAttribute.cs" />
     <Compile Include="Interceptor\PassThroughActivatorFacts.cs" />
     <Compile Include="Interceptor\PassThroughScropeFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

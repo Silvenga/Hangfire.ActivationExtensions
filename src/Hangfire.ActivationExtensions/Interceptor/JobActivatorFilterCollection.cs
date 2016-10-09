@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Hangfire.ActivationExtensions.Interceptor
 {
     public class JobActivatorFilterCollection
     {
-        public ICollection<IJobActivatorFilter> Filters { get; set; }
+        public IList<IJobActivatorFilter> Filters { get; set; }
 
         public JobActivatorFilterCollection()
         {
@@ -12,12 +13,12 @@ namespace Hangfire.ActivationExtensions.Interceptor
 
         public JobActivatorFilterCollection(ICollection<IJobActivatorFilter> filters)
         {
-            Filters = filters;
+            Filters = filters.ToList();
         }
 
         public JobActivatorFilterCollection(params IJobActivatorFilter[] filter)
         {
-            Filters = filter;
+            Filters = filter.ToList();
         }
     }
 }

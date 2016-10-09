@@ -85,4 +85,4 @@ public interface IJobActivatorFilter
 - [ ] Test `GlobalConfigurationExtensions`
 - [X] Test using Hangfire directly
 - [ ] Support `JobActivatorContext` within hooks
-- [ ] Support filter merging
+- [X] Support filter merging
