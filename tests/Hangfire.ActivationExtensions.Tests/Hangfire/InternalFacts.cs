@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+using System.Linq.Expressions;
 
 using Hangfire.ActivationExtensions.Interceptor;
+using Hangfire.ActivationExtensions.Tests.Helpers;
 using Hangfire.Common;
-using Hangfire.Server;
-using Hangfire.Storage;
 
 using NSubstitute;
 
@@ -20,8 +18,8 @@ namespace Hangfire.ActivationExtensions.Tests.Hangfire
     {
         private static readonly Fixture AutoFixture = new Fixture();
 
-        private readonly IStorageConnection _storage = Substitute.For<IStorageConnection>();
-        private readonly IJobCancellationToken _token = Substitute.For<IJobCancellationToken>();
+        private readonly HangfirePerformerFixture _performerFixture = new HangfirePerformerFixture();
+
         private readonly JobActivator _activator = Substitute.For<JobActivator>();
         private readonly JobActivatorScope _scope = Substitute.For<JobActivatorScope>();
         private readonly object _activatedJob = AutoFixture.Create<JobFixture>();
@@ -43,29 +41,9 @@ namespace Hangfire.ActivationExtensions.Tests.Hangfire
                     Substitute.For<IJobActivatorFilter>()
                 }
             };
-            var performer = CreatePerformer(new PassThroughActivator(jobActivatorFilterCollection, _activator));
-            var job = CreateBackgroundJob(Job.FromExpression(() => JobFixture.StaticMethod()));
-            var context = CreateContext(job);
-
-            // Act
-            performer.Perform(context);
-
-            // Assert
-        }
-
-        [Fact]
-        public void Instance_invocation_functions()
-        {
-            var jobActivatorFilterCollection = new JobActivatorFilterCollection
-            {
-                Filters = new List<IJobActivatorFilter>
-                {
-                    Substitute.For<IJobActivatorFilter>()
-                }
-            };
-            var performer = CreatePerformer(new PassThroughActivator(jobActivatorFilterCollection, _activator));
-            var job = CreateBackgroundJob(Job.FromExpression<JobFixture>(x => x.InstanceMethod()));
-            var context = CreateContext(job);
+            var performer = _performerFixture.CreatePerformer(new PassThroughActivator(jobActivatorFilterCollection, _activator));
+            var job = _performerFixture.CreateBackgroundJob(Job.FromExpression(() => JobFixture.StaticMethod()));
+            var context = _performerFixture.CreateContext(job);
 
             // Act
             performer.Perform(context);
@@ -79,7 +57,7 @@ namespace Hangfire.ActivationExtensions.Tests.Hangfire
             var mockFilter = Substitute.For<IJobActivatorFilter>();
 
             // Act
-            CreateAndPerform(mockFilter);
+            CreateAndPerform<JobFixture>(mockFilter, x => x.InstanceMethod());
 
             // Assert
             mockFilter.Received().OnScopeCreating(Arg.Any<JobActivatorContext>());
@@ -92,7 +70,7 @@ namespace Hangfire.ActivationExtensions.Tests.Hangfire
             var mockFilter = Substitute.For<IJobActivatorFilter>();
 
             // Act
-            CreateAndPerform(mockFilter);
+            CreateAndPerform<JobFixture>(mockFilter, x => x.InstanceMethod());
 
             // Assert
             mockFilter.Received().OnMaterializing(_jobType);
@@ -106,46 +84,21 @@ namespace Hangfire.ActivationExtensions.Tests.Hangfire
             var mockFilter = Substitute.For<IJobActivatorFilter>();
 
             // Act
-            CreateAndPerform(mockFilter);
+            CreateAndPerform<JobFixture>(mockFilter, x => x.InstanceMethod());
 
             // Assert
             mockFilter.Received().OnScopeDisposing(_jobType, _activatedJob);
             mockFilter.Received().OnScopeDisposed(_jobType, _activatedJob);
         }
 
-        private void CreateAndPerform(IJobActivatorFilter mockFilter)
+        private void CreateAndPerform<T>(IJobActivatorFilter mockFilter, Expression<Action<T>> methodCall)
         {
             var jobActivatorFilterCollection = new JobActivatorFilterCollection(mockFilter);
-            var performer = CreatePerformer(new PassThroughActivator(jobActivatorFilterCollection, _activator));
-            var job = CreateBackgroundJob(Job.FromExpression<JobFixture>(x => x.InstanceMethod()));
-            var context = CreateContext(job);
+            var performer = _performerFixture.CreatePerformer(new PassThroughActivator(jobActivatorFilterCollection, _activator));
+            var job = _performerFixture.CreateBackgroundJob(Job.FromExpression(methodCall));
+            var context = _performerFixture.CreateContext(job);
 
             performer.Perform(context);
-        }
-
-        private IBackgroundJobPerformer CreatePerformer(JobActivator activator)
-        {
-            var memberInfo = Type.GetType("Hangfire.Server.CoreBackgroundJobPerformer,Hangfire.Core");
-            if (memberInfo != null)
-            {
-                var ctor = memberInfo.
-                    GetConstructors(BindingFlags.Instance | BindingFlags.Public)
-                    .Single();
-
-                return (IBackgroundJobPerformer) ctor.Invoke(new object[] {activator});
-            }
-
-            throw new Exception("Type does not exist.");
-        }
-
-        private PerformContext CreateContext(BackgroundJob job)
-        {
-            return new PerformContext(_storage, job, _token);
-        }
-
-        private BackgroundJob CreateBackgroundJob(Job job)
-        {
-            return new BackgroundJob("JobId", job, DateTime.UtcNow);
         }
     }
 }
