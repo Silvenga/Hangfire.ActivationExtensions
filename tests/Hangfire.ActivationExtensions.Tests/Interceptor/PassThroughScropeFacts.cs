@@ -18,6 +18,7 @@ namespace Hangfire.ActivationExtensions.Tests.Interceptor
         private static readonly Fixture AutoFixture = new Fixture();
         private readonly JobActivatorFilterCollection _filters;
         private readonly JobActivatorScope _internalScope;
+        private JobActivatorContext _context;
 
         public PassThroughScropeFacts()
         {
@@ -26,12 +27,13 @@ namespace Hangfire.ActivationExtensions.Tests.Interceptor
                                    .Create();
 
             _internalScope = Substitute.For<JobActivatorScope>();
+            _context = null; // TODO Mock
         }
 
         [Fact]
         public void When_Resolve_is_called_multiple_times_then_throw()
         {
-            var scope = new PassThroughScope(_filters, _internalScope);
+            var scope = new PassThroughScope(_filters, _internalScope, _context);
             var type = AutoFixture.Create<Type>();
             scope.Resolve(type);
 

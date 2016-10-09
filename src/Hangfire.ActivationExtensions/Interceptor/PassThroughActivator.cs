@@ -29,14 +29,14 @@ namespace Hangfire.ActivationExtensions.Interceptor
         {
             foreach (var filter in _filterCollection.Filters)
             {
-                filter.OnMaterializing(jobType);
+                filter.OnMaterializing(jobType, null);
             }
 
             var activatedJob = _activator.ActivateJob(jobType);
 
             foreach (var filter in _filterCollection.Filters)
             {
-                filter.OnMaterialized(jobType, activatedJob);
+                filter.OnMaterialized(jobType, activatedJob, null);
             }
 
             return activatedJob;
@@ -63,7 +63,7 @@ namespace Hangfire.ActivationExtensions.Interceptor
                 filter.OnScopeCreated(context, scope);
             }
 
-            return new PassThroughScope(_filterCollection, scope);
+            return new PassThroughScope(_filterCollection, scope, context);
         }
     }
 }

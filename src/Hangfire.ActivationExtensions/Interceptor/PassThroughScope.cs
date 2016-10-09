@@ -6,10 +6,11 @@ namespace Hangfire.ActivationExtensions.Interceptor
     {
         private readonly JobActivatorFilterCollection _filterCollection;
         private readonly JobActivatorScope _scope;
+        private readonly JobActivatorContext _context;
         private object _activatedJob;
         private Type _type;
 
-        public PassThroughScope(JobActivatorFilterCollection filterCollection, JobActivatorScope scope)
+        public PassThroughScope(JobActivatorFilterCollection filterCollection, JobActivatorScope scope, JobActivatorContext context)
         {
             if (filterCollection == null)
             {
@@ -21,6 +22,7 @@ namespace Hangfire.ActivationExtensions.Interceptor
             }
             _filterCollection = filterCollection;
             _scope = scope;
+            _context = context;
         }
 
         public override object Resolve(Type type)
@@ -34,14 +36,14 @@ namespace Hangfire.ActivationExtensions.Interceptor
 
             foreach (var filter in _filterCollection.Filters)
             {
-                filter.OnMaterializing(type);
+                filter.OnMaterializing(type, _context);
             }
 
             _activatedJob = _scope.Resolve(type);
 
             foreach (var filter in _filterCollection.Filters)
             {
-                filter.OnMaterialized(type, _activatedJob);
+                filter.OnMaterialized(type, _activatedJob, _context);
             }
 
             return _activatedJob;
@@ -51,14 +53,14 @@ namespace Hangfire.ActivationExtensions.Interceptor
         {
             foreach (var filter in _filterCollection.Filters)
             {
-                filter.OnScopeDisposing(_type, _activatedJob);
+                filter.OnScopeDisposing(_type, _activatedJob, _context );
             }
 
             _scope.DisposeScope();
 
             foreach (var filter in _filterCollection.Filters)
             {
-                filter.OnScopeDisposed(_type, _activatedJob);
+                filter.OnScopeDisposed(_type, _activatedJob, _context);
             }
         }
     }

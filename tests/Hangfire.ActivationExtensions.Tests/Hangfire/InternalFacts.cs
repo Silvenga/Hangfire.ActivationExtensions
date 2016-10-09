@@ -60,8 +60,8 @@ namespace Hangfire.ActivationExtensions.Tests.Hangfire
             CreateAndPerform<JobFixture>(mockFilter, x => x.InstanceMethod());
 
             // Assert
-            mockFilter.Received().OnScopeCreating(Arg.Any<JobActivatorContext>());
-            mockFilter.Received().OnScopeCreated(Arg.Any<JobActivatorContext>(), Arg.Is(_scope));
+            mockFilter.Received().OnScopeCreating(Arg.Is<JobActivatorContext>(x => x != null));
+            mockFilter.Received().OnScopeCreated(Arg.Is<JobActivatorContext>(x => x != null), Arg.Is(_scope));
         }
 
         [Fact]
@@ -73,8 +73,8 @@ namespace Hangfire.ActivationExtensions.Tests.Hangfire
             CreateAndPerform<JobFixture>(mockFilter, x => x.InstanceMethod());
 
             // Assert
-            mockFilter.Received().OnMaterializing(_jobType);
-            mockFilter.Received().OnMaterialized(_jobType, _activatedJob);
+            mockFilter.Received().OnMaterializing(_jobType, Arg.Is<JobActivatorContext>(x => x != null));
+            mockFilter.Received().OnMaterialized(_jobType, _activatedJob, Arg.Is<JobActivatorContext>(x => x != null));
         }
 
         [Fact]
@@ -87,8 +87,8 @@ namespace Hangfire.ActivationExtensions.Tests.Hangfire
             CreateAndPerform<JobFixture>(mockFilter, x => x.InstanceMethod());
 
             // Assert
-            mockFilter.Received().OnScopeDisposing(_jobType, _activatedJob);
-            mockFilter.Received().OnScopeDisposed(_jobType, _activatedJob);
+            mockFilter.Received().OnScopeDisposing(_jobType, _activatedJob, Arg.Is<JobActivatorContext>(x => x != null));
+            mockFilter.Received().OnScopeDisposed(_jobType, _activatedJob, Arg.Is<JobActivatorContext>(x => x != null));
         }
 
         private void CreateAndPerform<T>(IJobActivatorFilter mockFilter, Expression<Action<T>> methodCall)

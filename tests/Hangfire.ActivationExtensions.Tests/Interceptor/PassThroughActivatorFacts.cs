@@ -47,7 +47,7 @@ namespace Hangfire.ActivationExtensions.Tests.Interceptor
 
             // Assert
             action.ShouldThrow<SignalException>();
-            _mockFilter.Received().OnMaterializing(type);
+            _mockFilter.Received().OnMaterializing(type, null);
         }
 
         [Fact]
@@ -61,14 +61,14 @@ namespace Hangfire.ActivationExtensions.Tests.Interceptor
             _mockActivator
                 .When(x => x.ActivateJob(type))
                  .Do(info =>
-                             _mockFilter.DidNotReceive().OnMaterialized(Arg.Any<Type>(), Arg.Any<object>())
+                             _mockFilter.DidNotReceive().OnMaterialized(Arg.Any<Type>(), Arg.Any<object>(), Arg.Any<JobActivatorContext>())
                  );
 
             // Act
             activator.ActivateJob(type);
 
             // Assert
-            _mockFilter.Received().OnMaterialized(type, obj);
+            _mockFilter.Received().OnMaterialized(type, obj, Arg.Any<JobActivatorContext>());
         }
 
         [Fact]
