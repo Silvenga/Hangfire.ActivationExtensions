@@ -29,6 +29,15 @@ GlobalConfiguration.Configuration
                 .UseActivatorInterceptor(activationFilter);
 ```
 
+OR using the default activator:
+
+```csharp
+// IJobActivatorFilter activationFilter = new ...
+
+GlobalConfiguration.Configuration
+                .UseDefaultActivatorInterceptor(activationFilter);
+```
+
 The variable `activationFilter` should be an implementation of `IJobActivatorFilter`. The interface is as below:
 
 ```csharp
