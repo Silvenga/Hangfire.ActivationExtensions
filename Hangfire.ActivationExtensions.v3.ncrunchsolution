@@ -1,0 +1,11 @@
+﻿<SolutionConfiguration>
+  <Settings>
+    <AllowParallelTestExecution>True</AllowParallelTestExecution>
+    <MetricsExclusionList>
+      <Value>Interceptor\JobActivatorFilterCollection.cs:src\Hangfire.ActivationExtensions\Hangfire.ActivationExtensions.csproj</Value>
+      <Value>src\Hangfire.ActivationExtensions\Hangfire.ActivationExtensions.csproj\Properties</Value>
+      <Value>tests\Hangfire.ActivationExtensions.Tests\Hangfire.ActivationExtensions.Tests.csproj</Value>
+    </MetricsExclusionList>
+    <SolutionConfigured>True</SolutionConfigured>
+  </Settings>
+</SolutionConfiguration>
