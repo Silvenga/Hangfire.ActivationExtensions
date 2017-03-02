@@ -57,6 +57,7 @@
     <Compile Include="Interceptor\JobActivatorFilterCollection.cs" />
     <Compile Include="Interceptor\PassThroughActivator.cs" />
     <Compile Include="Interceptor\PassThroughScope.cs" />
+    <Compile Include="Helpers\JetBrains.Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

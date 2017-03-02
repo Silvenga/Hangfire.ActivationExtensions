@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Hangfire.Annotations;
+using JetBrains.Annotations;
 
 namespace Hangfire.ActivationExtensions.Interceptor
 {

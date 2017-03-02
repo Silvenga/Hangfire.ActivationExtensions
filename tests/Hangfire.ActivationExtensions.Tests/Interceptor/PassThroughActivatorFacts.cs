@@ -20,18 +20,17 @@ namespace Hangfire.ActivationExtensions.Tests.Interceptor
         private readonly JobActivator _mockActivator;
         private readonly IJobActivatorFilter _mockFilter;
         private readonly JobActivatorFilterCollection _mockFilterCollection;
-        private readonly JobActivatorScope _mockScope;
 
         public PassThroughActivatorFacts()
         {
             _mockActivator = Substitute.For<JobActivator>();
-            _mockScope = Substitute.For<JobActivatorScope>();
+            var mockScope = Substitute.For<JobActivatorScope>();
             _mockFilter = Substitute.For<IJobActivatorFilter>();
             _mockFilterCollection = AutoFixture.Build<JobActivatorFilterCollection>()
                                                 .With(x => x.Filters, new List<IJobActivatorFilter> {_mockFilter})
                                                 .Create();
 
-            _mockActivator.BeginScope(Arg.Any<JobActivatorContext>()).Returns(_mockScope);
+            _mockActivator.BeginScope(Arg.Any<JobActivatorContext>()).Returns(mockScope);
         }
 
         [Fact]

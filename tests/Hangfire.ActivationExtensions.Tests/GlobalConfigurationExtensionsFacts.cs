@@ -20,10 +20,6 @@ namespace Hangfire.ActivationExtensions.Tests
         private readonly IGlobalConfiguration<JobActivator> _configurationFromActivator = Substitute.For<IGlobalConfiguration<JobActivator>>();
         private readonly JobActivator _activator = Substitute.For<JobActivator>();
 
-        public GlobalConfigurationExtensionsFacts()
-        {
-        }
-
         [Fact, UseCurrentJobActivator]
         public void UseActivatorInterceptor_sets_current_activator()
         {

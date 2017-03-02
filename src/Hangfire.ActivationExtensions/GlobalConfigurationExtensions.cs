@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Hangfire.ActivationExtensions.Interceptor;
-using Hangfire.Annotations;
+
+using JetBrains.Annotations;
 
 namespace Hangfire.ActivationExtensions
 {

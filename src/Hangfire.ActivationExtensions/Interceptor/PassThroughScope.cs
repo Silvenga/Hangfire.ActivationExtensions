@@ -30,7 +30,7 @@ namespace Hangfire.ActivationExtensions.Interceptor
             if (_type != default(Type))
             {
                 throw new NotSupportedException(
-                    $"{nameof(Resolve)} was called more than once, this should not normally occur. Please contact the developer of {nameof(Hangfire.ActivationExtensions)}.");
+                    $"{nameof(Resolve)} was called more than once, this should not normally occur. Please contact the developer of {nameof(ActivationExtensions)}.");
             }
             _type = type;
 
